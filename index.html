@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rumah Daun - Katalog Tanaman Hias dan Perawatannya</title>
+
+  <!-- Font dari Google Fonts (Lora untuk judul, Nunito Sans untuk isi) -->
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@600;700&family=Nunito+Sans:wght@400;700&display=swap" rel="stylesheet">
+  <!-- Bootstrap 5 (CSS) lewat CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- CSS buatan sendiri (harus setelah Bootstrap) -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <header>
+    <nav class="navbar navbar-expand-lg fixed-top" id="navbar">
+      <div class="container">
+        <a class="navbar-brand" href="#beranda">Rumah Daun</a>
+
+        <!-- Tombol hamburger untuk layar HP -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuNavbar" aria-label="Buka menu">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="menuNavbar">
+          <ul class="navbar-nav ms-auto align-items-lg-center">
+            <li class="nav-item"><a class="nav-link" href="#beranda">Beranda</a></li>
+            <li class="nav-item"><a class="nav-link" href="#katalog">Katalog</a></li>
+            <li class="nav-item"><a class="nav-link" href="#jadwal">Jadwal Siram</a></li>
+            <li class="nav-item"><a class="nav-link" href="#faq">FAQ</a></li>
+            <li class="nav-item"><a class="nav-link" href="#komunitas">Komunitas</a></li>
+            <li class="nav-item">
+              <a class="nav-link" href="#keranjang">Keranjang <span class="lencana" id="jumlahKeranjang">0</span></a>
+            </li>
+            <li class="nav-item">
+              <span class="nav-link">&#9829; <span class="lencana" id="jumlahFavorit">0</span></span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- ===== HERO ===== -->
+    <section id="beranda" class="hero">
+      <div class="container">
+        <div class="row align-items-center g-5">
+          <div class="col-lg-6">
+            <h1 class="display-5 fw-bold">Tanaman hias untuk rumahmu, lengkap dengan cara merawatnya</h1>
+            <p class="lead mt-3">
+              Pilih tanaman yang cocok dengan cahaya di rumahmu, cek jadwal siramnya,
+              lalu pesan langsung dari katalog.
+            </p>
+            <a href="#katalog" class="btn tombol-sage btn-lg mt-2">Lihat Katalog</a>
+            <a href="#jadwal" class="tautan-hero ms-3">Atur jadwal siram</a>
+          </div>
+          <div class="col-lg-6">
+            <!-- Jika img/hero.jpg tidak ada, JavaScript menggantinya dengan kotak cadangan -->
+            <div class="hero-gambar">
+              <img src="images/tanaman hias.jpg" alt="Tanaman hias di dalam ruangan" onerror="gantiGambar(this)">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== KATALOG ===== -->
+    <section id="katalog" class="bagian">
+      <div class="container">
+        <h2 class="fw-bold">Katalog Tanaman</h2>
+        <p class="teks-redup mb-4">Cari berdasarkan nama, saring berdasarkan cahaya, atau urutkan berdasarkan harga.</p>
+
+        <!-- Kolom cari dan urutkan -->
+        <div class="row g-3 mb-3">
+          <div class="col-md-7">
+            <input type="text" id="kolomCari" class="form-control" placeholder="Cari tanaman, contoh: monstera" aria-label="Cari tanaman">
+          </div>
+          <div class="col-md-5">
+            <select id="pilihUrutan" class="form-select" aria-label="Urutkan tanaman">
+              <option value="bawaan">Urutan bawaan</option>
+              <option value="murah">Harga termurah</option>
+              <option value="mahal">Harga termahal</option>
+              <option value="nama">Nama A-Z</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Tombol filter -->
+        <div class="mb-4" id="tombolFilter">
+          <button class="tombol-filter aktif" data-filter="Semua">Semua</button>
+          <button class="tombol-filter" data-filter="Teduh">Teduh</button>
+          <button class="tombol-filter" data-filter="Terang">Terang</button>
+          <button class="tombol-filter" data-filter="Favorit">&#9829; Favorit</button>
+        </div>
+
+        <!-- Kartu tanaman dibuat oleh JavaScript di sini -->
+        <div class="row g-4" id="daftarTanaman"></div>
+
+        <!-- Pesan jika tidak ada hasil -->
+        <p id="pesanKosong" class="text-center teks-redup mt-4 d-none">Tidak ada tanaman yang cocok. Coba kata kunci atau filter lain.</p>
+      </div>
+    </section>
+
+    <!-- ===== JADWAL SIRAM ===== -->
+    <section id="jadwal" class="bagian latar-sage">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-7">
+            <h2 class="fw-bold">Jadwal Siram</h2>
+            <p class="teks-redup mb-4">Masukkan tanaman dan tanggal terakhir kamu menyiramnya, nanti kami hitungkan kapan waktu siram berikutnya.</p>
+
+            <div class="kotak-putih">
+              <label for="pilihTanaman" class="form-label">Tanaman</label>
+              <select id="pilihTanaman" class="form-select"></select>
+
+              <label for="inputTanggal" class="form-label mt-3">Terakhir disiram pada</label>
+              <input type="date" id="inputTanggal" class="form-control">
+              <div class="pesan-error" id="errorTanggal"></div>
+
+              <button class="btn tombol-botol mt-4" id="tombolJadwal">Hitung jadwal</button>
+
+              <div id="hasilJadwal" class="mt-4"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== KERANJANG ===== -->
+    <section id="keranjang" class="bagian">
+      <div class="container">
+        <h2 class="fw-bold">Keranjang</h2>
+        <p class="teks-redup mb-4">Atur jumlah tanamanmu, lalu isi data pengiriman di bawahnya.</p>
+
+        <!-- Isi keranjang dibuat oleh JavaScript -->
+        <div id="isiKeranjang"></div>
+
+        <!-- Form pemesanan -->
+        <form id="formPesan" class="kotak-putih mt-4" novalidate>
+          <h3 class="h5">Data pengiriman</h3>
+
+          <label for="inputNama" class="form-label mt-3">Nama</label>
+          <input type="text" id="inputNama" class="form-control">
+          <div class="pesan-error" id="errorNama"></div>
+
+          <label for="inputHp" class="form-label mt-3">Nomor HP</label>
+          <input type="text" id="inputHp" class="form-control" placeholder="Contoh: 081234567890">
+          <div class="pesan-error" id="errorHp"></div>
+
+          <label for="inputAlamat" class="form-label mt-3">Alamat</label>
+          <textarea id="inputAlamat" rows="3" class="form-control"></textarea>
+          <div class="pesan-error" id="errorAlamat"></div>
+
+          <button type="submit" class="btn tombol-botol mt-4">Pesan sekarang</button>
+          <div class="pesan-sukses" id="pesanSukses"></div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ===== FORM KOMUNITAS (tugas RTM: text, textarea, select, checkbox) ===== -->
+    <section id="komunitas" class="bagian latar-sage">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-7">
+            <h2 class="fw-bold">Gabung Komunitas Rumah Daun</h2>
+            <p class="teks-redup mb-4">Isi data di bawah untuk bergabung dan menerima tips merawat tanaman.</p>
+
+            <form id="formKomunitas" class="kotak-putih" novalidate>
+
+              <!-- a. Nama: input type text -->
+              <div class="mb-3">
+                <label for="komunitasNama" class="form-label">Nama</label>
+                <input type="text" class="form-control" id="komunitasNama" placeholder="Nama lengkap">
+                <div class="pesan-error" id="errorKomNama"></div>
+              </div>
+
+              <!-- b. Alamat: textarea -->
+              <div class="mb-3">
+                <label for="komunitasAlamat" class="form-label">Alamat</label>
+                <textarea class="form-control" id="komunitasAlamat" rows="3" placeholder="Alamat lengkap"></textarea>
+                <div class="pesan-error" id="errorKomAlamat"></div>
+              </div>
+
+              <!-- c. Kota: select -->
+              <div class="mb-3">
+                <label for="komunitasKota" class="form-label">Kota</label>
+                <select class="form-select" id="komunitasKota">
+                  <option value="">Pilih kota</option>
+                  <option value="Semarang">Semarang</option>
+                  <option value="Kudus">Kudus</option>
+                  <option value="Kendal">Kendal</option>
+                  <option value="Demak">Demak</option>
+                  <option value="Pekalongan">Pekalongan</option>
+                  <option value="Tegal">Tegal</option>
+                  <option value="Surabaya">Surabaya</option>
+                  <option value="Jakarta">Jakarta</option>
+                </select>
+                <div class="pesan-error" id="errorKomKota"></div>
+              </div>
+
+              <!-- d. Hobi: checkbox -->
+              <div class="mb-3">
+                <p class="form-label mb-2">Hobi</p>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="checkbox" name="hobi" id="hobi1" value="Membaca">
+                  <label class="form-check-label" for="hobi1">Membaca</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="checkbox" name="hobi" id="hobi2" value="Coding">
+                  <label class="form-check-label" for="hobi2">Coding</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="checkbox" name="hobi" id="hobi3" value="Berenang">
+                  <label class="form-check-label" for="hobi3">Berenang</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="checkbox" name="hobi" id="hobi4" value="Badminton">
+                  <label class="form-check-label" for="hobi4">Badminton</label>
+                </div>
+                <div class="pesan-error" id="errorKomHobi"></div>
+              </div>
+
+              <button type="submit" class="btn tombol-botol">Daftar</button>
+              <div id="hasilKomunitas" class="mt-4"></div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== FAQ ===== -->
+    <section id="faq" class="bagian latar-beige">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-8">
+            <h2 class="fw-bold mb-4">Pertanyaan Umum</h2>
+
+            <div class="accordion" id="accordionFaq">
+
+              <div class="accordion-item">
+                <h3 class="accordion-header">
+                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                    Tanaman apa yang cocok untuk pemula?
+                  </button>
+                </h3>
+                <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#accordionFaq">
+                  <div class="accordion-body">
+                    Lidah mertua, sirih gading, dan kaktus mini. Ketiganya tahan banting dan tidak perlu sering disiram.
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h3 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                    Apa bedanya tanaman teduh dan terang?
+                  </button>
+                </h3>
+                <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#accordionFaq">
+                  <div class="accordion-body">
+                    Tanaman teduh cocok di ruangan dengan cahaya redup sampai sedang. Tanaman terang butuh cahaya terang, dekat jendela atau terkena sinar matahari.
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h3 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                    Kenapa daun tanamanku menguning?
+                  </button>
+                </h3>
+                <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#accordionFaq">
+                  <div class="accordion-body">
+                    Penyebab yang paling sering adalah terlalu banyak disiram. Cek tanahnya dulu dan pastikan pot punya lubang drainase.
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h3 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                    Apakah keranjangku tersimpan?
+                  </button>
+                </h3>
+                <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#accordionFaq">
+                  <div class="accordion-body">
+                    Ya. Keranjang dan daftar favorit tersimpan di browsermu, jadi tidak hilang saat halaman ditutup.
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="text-center py-4">
+    <!-- GANTI tulisan di dalam kurung siku dengan Nama dan NIM kamu -->
+    <p class="identitas mb-1">Nama : Wilda Lutfiana &nbsp;|&nbsp; NIM : A12.2025.07326</p>
+    <p class="mb-0">&copy; 2026 Rumah Daun. Dibuat untuk tugas UTS Pemrograman Web Dasar.</p>
+  </footer>
+
+  <!-- ===== MODAL DETAIL TANAMAN (isinya diisi JavaScript) ===== -->
+  <div class="modal fade" id="modalDetail" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title h5" id="modalJudul"></h3>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+        </div>
+        <div class="modal-body" id="modalIsi"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn tombol-botol" id="modalTambah">Tambah ke keranjang</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notifikasi kecil di bawah layar -->
+  <div id="notif"></div>
+
+  <!-- Tombol kembali ke atas -->
+  <button id="tombolAtas" class="d-none" aria-label="Kembali ke atas">&uarr;</button>
+
+  <!-- Bootstrap 5 (JS) lewat CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- JavaScript buatan sendiri -->
+  <script src="script.js"></script>
+</body>
+</html>
